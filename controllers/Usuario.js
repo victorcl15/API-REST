@@ -12,7 +12,7 @@ const createUsuario = (req = request,
     
              name: req.body.name,
              email: req.body.email,
-             estado: req.body.estado || false,
+             estado: req.body.estado || true,
              date: new Date(),
              dateUp: new Date()
          })
@@ -38,6 +38,7 @@ const editarUsuario = (req = request,
         const usuario = req.body
         const newUsuarioInfo = {
             name: usuario.name,
+            email: usuario.email,
             estado: usuario.estado || false,
         }
         Usuario.findByIdAndUpdate(id, newUsuarioInfo, { new: true})

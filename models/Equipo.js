@@ -1,7 +1,10 @@
 const {Schema, model} = require("mongoose")
 //Definición de esquema / plantilla de datos
 const equipoSchema = new Schema({
-    name: String,
+    name: {
+        type: String,
+        required: [true, "Nombre requerido"]
+    },
     estado: Boolean,
     date: Date,
     dateUp: Date

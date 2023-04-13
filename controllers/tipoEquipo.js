@@ -13,7 +13,7 @@ const createTipoEquipo = async (req = request,
         const newEquipo = new Equipo ({
     
              name: req.body.name,
-             estado: req.body.estado || false,
+             estado: req.body.estado || true,
              date: new Date(),
              dateUp: new Date()
     

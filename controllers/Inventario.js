@@ -125,7 +125,13 @@ const EditarInventario = (req = request,
 const getInventarios = (req = request,
     res = response) => {
     
-        Inventario.find({}).then(equipos => {
+        Inventario.find({}).populate({
+            path: "usuario",
+            match: {estado: true}
+        }).populate({path: "marca",
+        match: {estado: true}}).populate({path: "estado",
+        match: {estado: true}}).populate({path: "equipo",
+        match: {estado: true}}).then(equipos => {
             res.json(equipos)
         })
 }

@@ -1,5 +1,6 @@
 const Inventario = require('../models/Inventario')
 const {request, response} = require('express')
+const { validationResult, check } = require("express-validator");
 const estadoEquipo = require('../models/estadoEquipo')
 const Equipo = require('../models/Equipo')
 const Usuario = require('../models/Usuario')
@@ -14,6 +15,13 @@ const createInventario = async (req = request,
     res = response) => {
     
 try{
+
+
+
+    const errors = validationResult(req);
+        if(!errors.isEmpty()){
+            return res.status(400).json({mensaje: errors.array()});
+        }
 
 
         const data = req.body
@@ -91,12 +99,23 @@ try{
  * Edición
  */
 
-const EditarInventario = (req = request,
+const EditarInventario = async(req = request,
     res = response) => {
     
         const {id} = req.params
 
         const info = req.body
+
+        const existeSerial = await Inventario.findOne({serial: info.serial})
+        if(existeSerial){
+            return res.status(400).send("serial ya existe");
+        }
+
+        const existeModelo = await Inventario.findOne({modelo: info.modelo})
+        if(existeModelo){
+            return res.status(400).send("modelo ya existe");
+        }
+
         const newInventarioInfo = {
             serial: info.serial,
             modelo: info.modelo,
@@ -110,12 +129,15 @@ const EditarInventario = (req = request,
             estado: info.estado,
             equipo: info.equipo
         }
-        Inventario.findByIdAndUpdate(id, newInventarioInfo, { new: true})
-        .then(result => {
-            res.json(result)
-        }).catch(error => {
+
+        try {
+        const result = Inventario.findByIdAndUpdate(id, newInventarioInfo, { new: true})
+        
+        res.json(result)
+        }catch(error){
             console.error(error)
-        })
+        }
+       
 }
 
 

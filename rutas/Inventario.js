@@ -4,6 +4,9 @@ const { createInventario, getInventarios, getInventarioId, EditarInventario,
 const app = require("../app")
 const notFound = require("../middleware/notFound");
 const handleErrors = require("../middleware/handleErrors");
+const {validarRolAdmin } = require("../middleware/validar-rol-admin")
+const {validarJWT} = require("../middleware/validarjwt")
+const { validationResult, check } = require("express-validator");
 
 
 const router = Router()
@@ -18,7 +21,7 @@ router.post('/', createInventario)
 router.put('/:id', EditarInventario)
 
 // listar
-router.get('/mostrar', getInventarios)
+router.get('/mostrar', [validarJWT], getInventarios)
 
 router.get('/:id', getInventarioId)
 

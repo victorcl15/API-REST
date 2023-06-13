@@ -5,10 +5,13 @@ const usuarioSchema = new Schema({
         type: String,
         required: true
     },
+    
     email: {
         type: String,
         required: true
     },
+    password: {type: String, required: true},
+    rol: {type: String, required: true, enum: ['Administrador', 'Docente']},
     estado: Boolean,
     date: Date,
     dateUp: Date

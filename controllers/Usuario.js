@@ -1,5 +1,7 @@
 const Usuario = require('../models/Usuario')
 const {request, response} = require('express')
+const { validationResult, check } = require("express-validator");
+const bcrypt = require("bcryptjs")
 
 
 /**
@@ -23,6 +25,46 @@ const createUsuario = (req = request,
          
 
 
+}
+
+//creacion con JWT
+
+const createUsuarioJWT = async(req = request,
+    res = response) => {
+    try{
+
+        const errors = validationResult(req);
+        if(!errors.isEmpty()){
+            return res.status(400).json({mensaje: errors.array()});
+        }
+
+        const existeUsuario = await Usuario.findOne({email: req.body.email})
+        if(existeUsuario){
+            return res.status(400).send("Email ya existe");
+        }
+
+        let usuario = new Usuario();
+
+        usuario.name = req.body.name;
+        usuario.email = req.body.email;
+        usuario.rol = req.body.rol;
+
+        const salt = bcrypt.genSaltSync()
+
+        const password = bcrypt.hashSync( req.body.password, salt);
+        usuario.password = password;
+        usuario.date = new Date();
+        usuario.dateUp = new Date();
+
+        usuario = await usuario.save();
+
+        res.send(usuario);
+
+
+    }catch(error){
+        console.log(error);
+        res.status(500).json({mensaje: "Internal server error"});
+    }
 }
 
 
@@ -59,6 +101,21 @@ const getUsuario = (req = request,
         })
 }
 
+const getUsuarioJWT = async (req = request,
+    res = response) => {
+
+    try{
+
+        const usuarios = await Usuario.find({})
+        res.json(usuarios);
+
+    }catch(error){
+        res.status(500).send("Ocurrio un error")
+    }
+}
+
+
+
 const getUsuarioId = (req = request,
     res = response, next) => {
     
@@ -87,4 +144,5 @@ const getUsuarioId = (req = request,
     }
     
 
-module.exports = {createUsuario, getUsuario, getUsuarioId, editarUsuario, deleteUsuario}
+module.exports = {createUsuario, createUsuarioJWT, getUsuario, getUsuarioJWT,
+     getUsuarioId, editarUsuario, deleteUsuario}

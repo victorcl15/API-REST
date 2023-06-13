@@ -59,7 +59,7 @@ const EditarTipodeEquipo = (req = request,
 /**
  * Listar todos
  */
-const getTipoEquipos = (req = request,
+const getTipoEquipos =  (req = request,
     res = response) => {
     
         Equipo.find({}).then(equipos => {

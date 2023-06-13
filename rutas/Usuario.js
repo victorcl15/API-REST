@@ -1,9 +1,16 @@
 const { Router } = require('express')
-const { createUsuario, getUsuario, getUsuarioId, editarUsuario, 
+const { createUsuario, createUsuarioJWT, getUsuario, getUsuarioJWT, getUsuarioId, editarUsuario, 
     deleteUsuario } = require('../controllers/Usuario')
+
+const { validationResult, check } = require("express-validator");
+const bcrypt = require("bcryptjs")
+const {validarJWT} = require("../middleware/validarjwt")
+
 const app = require("../app")
 const notFound = require("../middleware/notFound");
 const handleErrors = require("../middleware/handleErrors");
+const Usuario = require('../models/Usuario');
+const {validarRolAdmin } = require("../middleware/validar-rol-admin")
 
 
 const router = Router()
@@ -11,6 +18,21 @@ const router = Router()
 
 // crear
 router.post('/', createUsuario)
+
+router.post("/user", [
+    check("name", "invalid.name").not().isEmpty(),
+    check("email", "invalid.email").isEmail(),
+    check("password", "invalid.password").not().isEmpty(),
+    check("rol", "invalid.rol").isIn(["Admin", "Observador"]),
+    validarJWT, validarRolAdmin
+    
+], createUsuarioJWT)
+
+
+
+router.get("/obtener", [validarJWT], getUsuarioJWT)
+
+
 
 
 // editar

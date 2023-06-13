@@ -4,13 +4,20 @@ const { createTipoEquipo, getTipoEquipos, getTipodeEquiposId, EditarTipodeEquipo
 const app = require("../app")
 const notFound = require("../middleware/notFound");
 const handleErrors = require("../middleware/handleErrors");
-
+const {validarRolAdmin } = require("../middleware/validar-rol-admin")
+const {validarJWT} = require("../middleware/validarjwt")
+const { validationResult, check } = require("express-validator");
 
 const router = Router()
 
 
 // crear
-router.post('/', createTipoEquipo)
+router.post('/', [
+    check("name", "invalid.name").not().isEmpty(),
+    
+    validarJWT, validarRolAdmin
+    
+], createTipoEquipo)
 
 
 // editar
@@ -18,7 +25,7 @@ router.post('/', createTipoEquipo)
 router.put('/:id', EditarTipodeEquipo)
 
 // listar
-router.get('/mostrar', getTipoEquipos)
+router.get('/mostrar', [validarJWT], getTipoEquipos)
 
 router.get('/:id', getTipodeEquiposId)
 

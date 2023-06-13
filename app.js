@@ -5,6 +5,8 @@ const handleErrors = require("./middleware/handleErrors");
 const cors = require("cors")
 
 app.use(express.json());
+
+// implementacion de cors,  atraves del middleware
 app.use(cors())
 
 const tipoEquipo = require('./rutas/tipoEquipo')
@@ -20,6 +22,12 @@ app.use('/api/estadoequipos', estadoEquipo)
 app.use('/api/usuarios', Usuario)
 app.use('/api/marcas', Marca)
 app.use('/api/inventarios', Inventario)
+
+//-------------
+
+app.use("/usuario", require("./rutas/Usuario"));
+app.use("/auth", require("./rutas/auth"));
+
 
 app.use(notFound)
 app.use(handleErrors)
